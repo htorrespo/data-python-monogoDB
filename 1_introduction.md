@@ -578,3 +578,43 @@ class conn:
 ```
 
 The code begins by importing json, csv, sys, and os libraries. Next, a path (sys.path.append) to the class conn is established. Method getcwd() (from the os library) gets the current working directory for classes. Class conn is then imported. I built this class to simplify connectivity to the database from any program. The code continues with four functions. Functions read_dict() and conv_reg_dict() were explained earlier. Function dump_json() writes JSON data to disk. Function read_json() reads JSON data from disk. The main block begins by reading a CSV file and converting it into a list of regular dictionary elements. Next, the list is dumped to disk as JSON. The code continues by creating a PyMongo connection instance test as an object and assigning it to variable obj. You can create any instance you wish, but test is the default. Next, the database instance is assigned to db by method getDB() from obj. Collection names is then created in MongoDB and assigned to variable names. When prototyping, I always drop the collection before manipulating it. This eliminates duplicate key errors. The code continues by inserting the JSON data into the collection. For each document in a MongoDB collection, I explicitly create primary key values by assigning sequential numbers to `_id`. MongoDB exclusively uses `_id` as the primary key identifier for each document in a collection. If you don’t name it yourself, a system identifier is automatically created, which is messy to work with in my opinion. The code continues with PyMongo query names.find(), which retrieves all documents from the names collection. Three records are displayed just to verify that the query is working. To reuse a query that has already been accessed, rewind() must be issued. The next PyMongo query accesses and displays three (n = 3) documents . The next query accesses and displays the last three documents. Next, we move into more complex queries. First, access documents with first name Ella. Second, access documents with first names Ella or Lou. Third, access document Lou Pole. Fourth, access documents with first name Ella or last name Pole. Next, a regular expression is used to access documents with last names beginning with Sch. A regular expression is a sequence of characters that define a search pattern. Finally, add a new document, display it, and display the last three documents in the collection.
+
+## Visualization
+
+Visualization is the process of representing data graphically and leveraging these representations to gain insight into the data. Visualization is one of the most important skills in data science because it facilitates the way we process large amounts of complex data.
+
+The following code example creates and plots a normally distributed set of data. It then shifts data to the left (and plots) and shifts data to the right (and plots). A normal distribution is a probability distribution that is symmetrical about the mean, and is very important to data science because it is an excellent model of how events naturally occur in reality.
+
+```python
+import matplotlib.pyplot as plt
+from scipy.stats import norm
+import numpy as np
+
+if __name__ == '__main__':
+    x = np.linspace(norm.ppf(0.01), norm.ppf(0.99), num=100)
+    x_left = x - 1
+    x_right = x + 1
+    y = norm.pdf(x)
+    plt.ylim(0.02, 0.41)
+    plt.scatter(x, y, color="crimson")
+    plt.fill_between(x, y, color="crimson")
+    plt.scatter(x_left, y, color="chartreuse")
+    plt.scatter(x_right, y, color="cyan")
+    plt.show()
+```
+
+Open image in new windowFigure 1-1
+
+Figure 1-1 Normally distributed data
+
+The code example (Figure 1-1) begins by importing matplotlib, scipy, and numpy libraries. The matplotlib library is a 2-D plotting module that produces publication quality figures in a variety of hardcopy formats and interactive environments across platforms. The SciPy library provides user-friendly and efficient numerical routings for numerical integration and optimization. The main block begins by creating a sequence of 100 numbers between 0.01 and 0.99. The reason is the normal distribution is based on probabilities, which must be between zero and one. The code continues by shifting the sequence one unit to the left and one to the right for later plotting. The ylim() method is used to pull the chart to the bottom (x-axis). A scatter plot is created for the original data, one unit to the left, and one to the right, with different colors for effect.
+
+On the 1st line of the main block in the linespace() function, increase the number of data points from num = 100 to num = 1000 and see what happens. The result is a smoothing of the normal distribution, because more data provides a more realistic picture of the natural world.
+
+Output:
+
+Open image in new windowFigure 1-2
+
+Figure 1-2 Smoothing normally distributed data
+
+Smoothing works (Figure 1-2) because a normal distribution consists of continuous random variables. A continuous random variable is a random variable with a set of infinite and uncountable values. So, more data creates more predictive realism. Since we cannot add infinite data, we work with as much data as we can. The tradeoff is more data increases computer processing resources and execution time. Data scientists must thereby weigh this tradeoff when conducting their tradecraft.
