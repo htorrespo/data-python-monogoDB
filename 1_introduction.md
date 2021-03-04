@@ -25,7 +25,7 @@ Python functions are first-class functions, which means they can be used as para
 
 The following code example defines custom functions and uses built-in ones:
 
-```pythoh
+```python
 def num_to_str(n):
     return str(n)
 
