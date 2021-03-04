@@ -11,19 +11,12 @@ The goal of this chapter is not to teach Python as a whole, but present, explain
 Python fundamentals are covered with a wide spectrum of activities with associated coding examples as follows:
 
 1. functions and strings
- 
 2. lists, tuples, and dictionaries
- 
 3. reading and writing data
- 
 4. list comprehension
- 
 5. generators
- 
 6. data randomization
- 
 7. MongoDB and JSON
- 
 8. visualization
 
 ## Functions and Strings
@@ -32,13 +25,16 @@ Python functions are first-class functions, which means they can be used as para
 
 The following code example defines custom functions and uses built-in ones:
 
-```
+```pythoh
 def num_to_str(n):
     return str(n)
+
 def str_to_int(s):
     return int(s)
+
 def str_to_float(f):
     return float(f)
+
 if __name__ == "__main__":
     # hash symbol allows single-line comments
     '''
