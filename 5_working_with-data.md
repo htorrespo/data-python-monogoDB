@@ -364,3 +364,370 @@ Open image in new window
 
 The code example begins by importing Pandas. The main block begins by loading audio.json into a Pandas df. Next, the df is sliced by amplifier from the desc column . The code continues by slicing by the price column for equipment more expensive than $40,000. The next slice is by price column for equipment between $5,000 and $6,000. The final slice is by rows 0, 10, and 19.
 
+## Data Cubes
+
+A data cube is an n-dimensional array of values. Since it is hard to conceptualize an n-dimensional cube, most are 3-D in practice.
+
+Let’s build a cube that holds three stocks—GOOGL, AMZ, and MKL. For each stock, include five days of data. Each day includes data for open, high, low, close, adj close, and volume values. So, the three dimensions are stock, day, and values. Data was garnered from actual stock quotes.
+
+The code example creates a cube, saves it to a JSON file, reads the JSON, and displays some information:
+
+```python
+import json
+
+def dump_json(f, d):
+    with open(f, 'w') as f:
+        json.dump(d, f)
+
+def read_json(f):
+    with open(f) as f:
+        return json.load(f)
+
+def rnd(n):
+    return '{:.2f}'.format(n)
+
+if __name__ == "__main__":
+    d = dict()
+    googl = dict()
+    googl['2017-09-25'] =\
+    {'Open':939.450012, 'High':939.750000, 'Low':924.510010,
+     'Close':934.280029, 'Adj Close':934.280029, 'Volume':1873400}
+    googl['2017-09-26'] =\
+    {'Open':936.690002, 'High':944.080017, 'Low':935.119995,
+     'Close':937.429993, 'Adj Close':937.429993, 'Volume':1672700}
+    googl['2017-09-27'] =\
+    {'Open':942.739990, 'High':965.429993, 'Low':941.950012,
+     'Close':959.900024, 'Adj Close':959.900024, 'Volume':2334600}
+    googl['2017-09-28'] =\
+    {'Open':956.250000, 'High':966.179993, 'Low':955.549988,
+     'Close':964.809998, 'Adj Close':964.809998, 'Volume':1400900}
+    googl['2017-09-29'] =\
+    {'Open':966.000000, 'High':975.809998, 'Low':966.000000,
+     'Close':973.719971, 'Adj Close':973.719971, 'Volume':2031100}
+    amzn = dict()
+    amzn['2017-09-25'] =\
+    {'Open':949.309998, 'High':949.419983, 'Low':932.890015,
+     'Close':939.789978, 'Adj Close':939.789978, 'Volume':5124000}
+    amzn['2017-09-26'] =\
+    {'Open':945.489990, 'High':948.630005, 'Low':931.750000,
+     'Close':937.429993, 'Adj Close':938.599976, 'Volume':3564800}
+    amzn['2017-09-27'] =\
+    {'Open':948.000000, 'High':955.299988, 'Low':943.299988,
+     'Close':950.869995, 'Adj Close':950.869995, 'Volume':3148900}
+    amzn['2017-09-28'] =\
+    {'Open':951.859985, 'High':959.700012, 'Low':950.099976,
+     'Close':956.400024, 'Adj Close':956.400024, 'Volume':2522600}
+    amzn['2017-09-29'] =\
+    {'Open':960.109985, 'High':964.830017, 'Low':958.380005,
+     'Close':961.349976, 'Adj Close':961.349976, 'Volume':2543800}
+    mkl = dict()
+    mkl['2017-09-25'] =\
+    {'Open':1056.199951, 'High':1060.089966, 'Low':1047.930054,
+     'Close':1050.250000, 'Adj Close':1050.250000, 'Volume':23300}
+    mkl['2017-09-26'] =\
+    {'Open':1052.729980, 'High':1058.520020, 'Low':1045.000000,
+     'Close':1045.130005, 'Adj Close':1045.130005, 'Volume':25800}
+    mkl['2017-09-27'] =\
+    {'Open':1047.560059, 'High':1069.099976, 'Low':1047.010010,
+     'Close':1064.040039, 'Adj Close':1064.040039, 'Volume':21100}
+    mkl['2017-09-28'] =\
+    {'Open':1064.130005, 'High':1073.000000, 'Low':1058.079956,
+     'Close':1070.550049, 'Adj Close':1070.550049, 'Volume':23500}
+    mkl['2017-09-29'] =\
+    {'Open':1068.439941, 'High':1073.000000, 'Low':1060.069946,
+     'Close':1067.979980, 'Adj Close':1067.979980 , 'Volume':20700}
+    d['GOOGL'], d['AMZN'], d['MKL'] = googl, amzn, mkl
+    json_file = 'data/cube.json'
+    dump_json(json_file, d)
+    d = read_json(json_file)
+    s = ' '
+    print ('\'Adj Close\' slice:')
+    print (10*s, 'AMZN', s, 'GOOGL', s, 'MKL')
+    print ('Date')
+    print ('2017-09-25', rnd(d['AMZN']['2017-09-25']['Adj Close']),
+           rnd(d['GOOGL']['2017-09-25']['Adj Close']),
+           rnd(d['MKL']['2017-09-25']['Adj Close']))
+    print ('2017-09-26', rnd(d['AMZN']['2017-09-26']['Adj Close']),
+           rnd(d['GOOGL']['2017-09-26']['Adj Close']),
+           rnd(d['MKL']['2017-09-26']['Adj Close']))
+    print ('2017-09-27', rnd(d['AMZN']['2017-09-27']['Adj Close']),
+           rnd(d['GOOGL']['2017-09-27']['Adj Close']),
+           rnd(d['MKL']['2017-09-27']['Adj Close']))
+    print ('2017-09-28', rnd(d['AMZN']['2017-09-28']['Adj Close']),
+           rnd(d['GOOGL']['2017-09-28']['Adj Close']),
+           rnd(d['MKL']['2017-09-28']['Adj Close']))
+    print ('2017-09-29', rnd(d['AMZN']['2017-09-29']['Adj Close']),
+           rnd(d['GOOGL']['2017-09-29']['Adj Close']),
+           rnd(d['MKL']['2017-09-29']['Adj Close']))
+```
+
+Open image in new window
+
+The code example begins by importing json. Function dump_json() and read_json() save and read JSON data respectively. The main block creates a cube by creating a dictionary d, dictionaries for each stock, and adding data by day and attribute to each stock dictionary. The code continues by saving the cube to JSON file cube.json. Finally, the code reads cube.json and displays a slice from the cube.
+
+## Data Scaling and Wrangling
+
+Data scaling is changing type, spread, and/or position to compare data that are otherwise incomparable. Data scaling is very common in data science. Mean centering is the 1st technique, which transforms data by subtracting out the mean. Normalization is the 2nd technique, which transforms data to fall within the range between 0 and 1. Standardization is the 3rd technique, which transforms data to zero mean and unit variance (SD = 1), which is commonly referred to as standard normal .
+
+The 1st code example generates and centers a normal distribution:
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+def rnd_nrml(m, s, n):
+    return np.random.normal(m, s, n)
+
+def ctr(d):
+    return [x-np.mean(d) for x in d]
+
+if __name__ == "__main__":
+    mu, sigma, n, c1, c2, b = 10, 15, 100, 'pink',\
+                              'springgreen', True
+    s = rnd_nrml(mu, sigma, n)
+    plt.figure()
+    ax = plt.subplot(211)
+    ax.set_title('normal distribution')
+    count, bins, ignored = plt.hist(s, 30, color=c1, normed=b)
+    sc = ctr(s)
+    ax = plt.subplot(212)
+    ax.set_title('normal distribution "centered"')
+    count, bins, ignored = plt.hist(sc, 30, color=c2, normed=b)
+    plt.tight_layout()
+    plt.show()
+```
+
+Open image in new windowFigure 5-10
+
+Figure 5-10 Subplot for centering data
+
+The code example begins by importing numpy and matplotlib. Function rnd_nrml() generates a normal distribution based on mean (mu), SD (sigma), and n number of data points. Function ctr() subtracts out the mean from every data point. The main block begins by creating the normal distribution. The code continues by plotting the original and centered distributions (Figure 5-10). Notice that the distributions are exactly the same, but the 2nd distribution is centered with mean of 0.
+
+The 2nd code example generates and normalizes a normal distribution:
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+def rnd_nrml(m, s, n):
+    return np.random.normal(m, s, n)
+
+def nrml(d):
+    return [(x-np.amin(d))/(np.amax(d)-np.amin(d)) for x in d]
+
+if __name__ == "__main__":
+    mu, sigma, n, c1, c2, b = 10, 15, 100, 'orchid',\
+                              'royalblue', True
+    s = rnd_nrml(mu, sigma, n)
+    plt.figure()
+    ax = plt.subplot(211)
+    ax.set_title('normal distribution')
+    count, bins, ignored = plt.hist(s, 30, color=c1, normed=b)
+    sn = nrml(s)
+    ax = plt.subplot(212)
+    ax.set_title('normal distribution "normalized"')
+    count, bins, ignored = plt.hist(sn, 30, color=c2, normed=b)
+    plt.tight_layout()
+    plt.show()
+```
+
+Open image in new windowFigure 5-11
+
+Figure 5-11 Subplot for normalizing data
+
+The code example begins by importing numpy and matplotlib. Function rnd_nrml() generates a normal distribution based on mean (mu), SD (sigma), and n number of data points. Function nrml() transforms data to fall within the range between 0 and 1. The main block begins by creating the normal distribution. The code continues by plotting the original and normalized distributions (Figure 5-11). Notice that the distributions are exactly the same, but the 2nd distribution is normalized between 0 and 1.
+
+The 3rd code example transforms data to zero mean and unit variance (standard normal):
+
+```python
+import numpy as np, csv
+import matplotlib.pyplot as plt
+
+def rnd_nrml(m, s, n):
+    return np.random.normal(m, s, n)
+
+def std_nrml(d, m, s):
+    return [(x-m)/s for x in d]
+
+if __name__ == "__main__":
+    mu, sigma, n, b = 0, 1, 1000, True
+    c1, c2 = 'peachpuff', 'lime'
+    s = rnd_nrml(mu, sigma, n)
+    plt.figure(1)
+    plt.title('standard normal distribution')
+    count, bins, ignored = plt.hist(s, 30, color=c1, normed=b)
+    plt.plot(bins, 1/(sigma * np.sqrt(2 * np.pi)) *
+             np.exp( - (bins - mu)**2 / (2 * sigma**2) ),
+             linewidth=2, color=c2)
+    start1, start2 = 5, 600
+    mu1, sigma1, n, b = 10, 15, 500, True
+    x1 = np.arange(start1, n+start1, 1)
+    y1 = rnd_nrml(mu1, sigma1, n)
+    mu2, sigma2, n, b = 25, 5, 500, True
+    x2 = np.arange(start2, n+start2, 1)
+    y2 = rnd_nrml(mu2, sigma2, n)
+    plt.figure(2)
+    ax = plt.subplot(211)
+    ax.set_title('dataset1 (mu=10, sigma=15)')
+    count, bins, ignored = plt.hist(y1, 30, color="r", normed=b)
+    ax = plt.subplot(212)
+    ax.set_title('dataset2 (mu=5, sigma=5)')
+    count, bins, ignored = plt.hist(y2, 30, color="g", normed=b)
+    plt.tight_layout()
+    plt.figure(3)
+    ax = plt.subplot(211)
+    ax.set_title('Normal Distributions')
+    g1, g2 = (x1, y1), (x2, y2)
+    data = (g1, g2)
+    colors = ('red', 'green')
+    groups = ('dataset1', 'dataset2')
+    for data, color, group in zip(data, colors, groups):
+        x, y = data
+        ax.scatter(x, y, alpha=0.8, c=color, edgecolors="none",
+                   s=30, label=group)
+    plt.legend(loc=4)
+    ax = plt.subplot(212)
+    ax.set_title('Standard Normal Distributions')    
+    ds1 = (x1, std_nrml(y1, mu1, sigma1))
+    y1_sn = ds1[1]
+    ds2 = (x2, std_nrml(y2, mu2, sigma2))
+    y2_sn = ds2[1]
+    g1, g2 = (x1, y1_sn), (x2, y2_sn)
+    data = (g1, g2)
+    for data, color, group in zip(data, colors, groups):
+        x, y = data
+        ax.scatter(x, y, alpha=0.8, c=color, edgecolors="none",
+                   s=30, label=group)
+    plt.tight_layout()        
+    plt.show()
+```
+
+Open image in new windowFigure 5-12
+
+Figure 5-12 Standard normal distribution
+
+Open image in new windowFigure 5-13
+
+Figure 5-13 Normal distributions
+
+Open image in new windowFigure 5-14
+
+Figure 5-14 Normal and standard normal distributions
+
+The code example begins by importing numpy and matplotlib . Function rnd_nrml() generates a normal distribution based on mean (mu), SD (sigma), and n number of data points. Function std_nrml() transforms data to standard normal. The main block begins by creating a standard normal distribution as a histogram and a line (Figure 5-12). The code continues by creating and plotting two different normally distributed datasets (Figure 5-13). Next, both data sets are rescaled to standard normal and plotted (Figure 5-14). Now, the datasets can be compared with each other. Although the original plots of the datasets appear to be very different, they are actually very similar distributions.
+
+The 4th code example reads a CSV dataset, saves it to JSON, wrangles it, and prints a few records. The URL for the data is: https://community.tableau.com/docs/DOC-1236 . However, the data on this site changes, so please use the data from our website to work with this example:
+
+```python
+import csv, json
+
+def read_dict(f):
+    return csv.DictReader(open(f))
+
+def to_dict(d):
+    return [dict(row) for row in d]
+
+def dump_json(f, d):
+    with open(f, 'w') as fout:
+        json.dump(d, fout)
+
+def read_json(f):
+    with open(f) as f:
+        return json.load(f)
+
+def mk_data(d):
+    for i, row in enumerate(d):
+        e = {}
+        e['_id'] = i
+        e['cust'] = row['Customer Name']
+        e['item'] = row['Sub-Category']
+        e['sale'] = rnd(row['Sales'])
+        e['quan'] = row['Quantity']
+        e['disc'] = row['Discount']
+        e['prof'] = rnd(row['Profit'])        
+        e['segm'] = row['Segment']
+        yield e
+
+def rnd(v):
+    return str(round(float(v),2))
+
+if __name__ == "__main__":
+    f= 'data/superstore.csv'
+    d = read_dict(f)
+    data = to_dict(d)
+    jsonf = 'data/superstore.json'
+    dump_json(jsonf, data)
+    print ('"superstore" data added to JSON\n')
+    json_data = read_json(jsonf)
+    print ("{:20s} {:15s} {:10s} {:3s} {:5s} {:12s} {:10s}".
+           format('CUSTOMER', 'ITEM', 'SALES', 'Q', 'DISC',
+                  'PROFIT', 'SEGMENT'))
+    generator = mk_data(json_data)
+    for i, row in enumerate(generator):
+        if i < 10:
+            print ("{:20s} {:15s}".format(row['cust'], row['item']),
+                   "{:10s} {:3s}".format(row['sale'], row['quan']),
+                   "{:5s} {:12s}".format(row['disc'], row['prof']),
+                   "{:10s}".format(row['segm']))
+        else:
+            break
+```
+
+Open image in new window
+
+The code example begins by importing csv and json libraries. Function read_dict() reads a CSV file as an OrderedDict. Function to_dict() converts an OrderedDict to a regular dictionary. Function dump_json() saves a file to JSON. Function read_json() reads a JSON file. Function mk_data() creates a generator object consisting of wrangled data from the JSON file. Function rnd() rounds a number to 2 decimal places. The main block begins by reading a CSV file and converting it to JSON. The code continues by reading the newly created JSON data. Next, a generator object is created from the JSON data. The generator object is critical because it speeds processing orders of magnitude faster than a list. Since the dataset is close to 10,000 records, speed is important. To verify that the data was created correctly, the generator object is iterated a few times to print some of the wrangled records.
+
+The 5th and final code example reads the JSON file created in the previous example, wrangles it, and saves the wrangled data set to JSON:
+
+```python
+import json
+
+def read_json(f):
+    with open(f) as f:
+        return json.load(f)
+
+def mk_data(d):
+    for i, row in enumerate(d):
+        e = {}
+        e['_id'] = i
+        e['cust'] = row['Customer Name']
+        e['item'] = row['Sub-Category']
+        e['sale'] = rnd(row['Sales'])
+        e['quan'] = row['Quantity']
+        e['disc'] = row['Discount']
+        e['prof'] = rnd(row['Profit'])        
+        e['segm'] = row['Segment']
+        yield e
+
+def rnd(v):
+    return str(round(float(v),2))
+
+if __name__ == "__main__":
+    jsonf = 'data/superstore.json'
+    json_data = read_json(jsonf)
+    l = len(list(mk_data(json_data)))
+    generator = mk_data(json_data)
+    jsonf= 'data/wrangled.json'
+    with open(jsonf, 'w') as f:
+        f.write('[')
+    for i, row in enumerate(generator):
+        j = json.dumps(row)
+        if i < l - 1:
+            with open(jsonf, 'a') as f:
+                f.write(j)
+                f.write(',')
+        else:
+            with open(jsonf, 'a') as f:
+                f.write(j)
+                f.write(']')            
+    json_data = read_json(jsonf)
+    for i, row in enumerate(json_data):
+        if i < 5:
+            print (row['cust'], row['item'], row['sale'])
+        else:
+            break
+```
+
+Open image in new window
+
+The code example imports json. Function read_json() reads a JSON file. Function mk_data() creates a generator object consisting of wrangled data from the JSON file. Function rnd() rounds a number to two decimal places. The main block begins by reading a JSON file. A generator object must be created twice. The 1st generator allows us to find the length of the JSON file. The 2nd generator consists of wrangled data from the JSON file. Next, the generator is traversed so we can create a JSON file of the wrangled data. Although the generator object is created and can be traversed very fast, it takes a bit of time to create a JSON file consisting of close to 10,000 wrangled records. On my machine, it took a bit over 33 seconds, so be patient.
