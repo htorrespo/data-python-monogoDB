@@ -322,4 +322,246 @@ Open image in new window
 
 The code begins by importing math and numpy libraries. It continues with six functions. Function sqrt_sum_squares() calculates magnitude for one vector from scratch. Function mag() does the same but uses numpy. Function a_tang() calculates the arctangent of a vector, which is the direction (angle) of a vector from the origin (0,0). Function dist() calculates magnitude between two vectors from scratch. Function mags() does the same but uses numpy. Function a_tangs() calculates the arctangent of two vectors. The main block creates a vector, calculates magnitude and direction, and displays. Next, magnitude and direction are calculated and displayed for two vectors. Finally, magnitude and direction for a single vector are calculated using the two vector formulas. This is accomplished by using the origin (0,0) as the 1st vector. So, functions that calculate magnitude and direction for a single vector are not needed, because any single vector always begins from the origin (0,0). Therefore, a vector is simply a point in space measured either from the origin (0,0) or in relation to another vector by magnitude and direction.
 
+## Basic Matrix Transformations
+
+The 1st code example introduces the identity matrix, which is a square matrix with ones on the main diagonal and zeros elsewhere. The product of matrix A and its identity matrix is A, which is important mathematically because the identity property of multiplication states that any number multiplied by 1 is equal to itself.
+
+```python
+import numpy as np
+
+def slice_row(M, i):
+    return M[i,:]
+
+def slice_col(M, j):
+    return M[:, j]
+
+def to_int(M):
+    return M.astype(np.int64)
+
+if __name__ == "__main__":    
+    A = [[1, 9, 3, 6, 7],
+         [4, 8, 6, 2, 1],
+         [9, 8, 7, 1, 2],
+         [1, 1, 9, 2, 4],
+         [9, 1, 1, 3, 5]]
+    A = np.matrix(A)
+    print ('A:\n', A)    
+    print ('\n1st row: ', slice_row(A, 0))
+    print ('\n3rd column:\n', slice_col(A, 2))
+    shapeA = np.shape(A)
+    I = np.identity(np.shape(A)[0])
+    I = to_int(I)
+    print ('\nI:\n', I)
+    dot_product = np.dot(A, I)
+    print ('\nA * I = A:\n', dot_product)
+    print ('\nA\':\n', A.I)
+    A_by_Ainv = np.round(np.dot(A, A.I), decimals=0, out=None)
+    A_by_Ainv = to_int(A_by_Ainv)
+    print ('\nA * A\':\n', A_by_Ainv)
+```
+
+The code begins by importing numpy. It continues with three functions. Function slice_row() slices a row from a matrix. Function slice_col() slices a column from a matrix. Function to_int() converts matrix elements to integers. The main block begins by creating matrix A. It continues by creating the identity matrix for A. Finally, it creates the identity matrix for A by using the dot product of A with A' (inverse of A).
+
+The 2nd code example converts a list of lists into a numpy matrix and traverses it:
+
+```python
+import numpy as np
+
+if __name__ == "__main__":
+    data = [
+        [41, 72, 180], [27, 66, 140],
+        [18, 59, 101], [57, 72, 160],
+        [21, 59, 112], [29, 77, 250],
+        [55, 60, 120], [28, 72, 110],
+        [19, 59, 99], [32, 68, 125],
+        [31, 79, 322], [36, 69, 111]
+        ]
+    A = np.matrix(data)
+    print ('manual traversal:')
+    
+    for p in range(A.shape[0]):
+        for q in range(A.shape[1]):
+            print (A[p,q], end=' ')
+        print ()
+```
+
+The code begins by importing numpy. The main block begins by creating a list of lists, converting it into numpy matrix A, and traversing A. Although I have demonstrated several methods for traversing a numpy matrix, this is my favorite method.
+
+The 3rd code example converts a list of lists into numpy matrix A. It then slices and dices A:
+
+```python
+import numpy as np
+
+if __name__ == "__main__":
+    points_3D_space = [
+        [0, 0, 0],
+        [1, 2, 3],
+        [2, 2, 2],
+        [9, 9, 9] ]
+    A = np.matrix(points_3D_space)
+    print ('slice entire A:')
+    print (A[:])
+    print ('\nslice 2nd column:')
+    print (A[0:4, 1])
+    print ('\nslice 2nd column (alt method):')
+    print (A[:, 1])
+    print ('\nslice 2nd & 3rd value 3rd column:')
+    print (A[1:3, 2])
+    print ('\nslice last row:')
+    print (A[-1])
+    print ('\nslice last row (alt method):')
+    print (A[3])
+    print ('\nslice 1st row:')
+    print (A[0, :])
+    print ('\nslice 2nd row; 2nd & 3rd value:')
+    print (A[1, 1:3])
+```
+
+The code begins by importing numpy. The main block begins by creating a list of lists and converting it into numpy matrix A. The code continues by slicing and dicing the matrix.
+
+## Pandas Matrix Applications
+
+The pandas library provides high-performance, easy-to-use data structure and analysis tools. The most commonly used pandas object is a DataFrame (df). A df is a 2-D structure with labeled axes (row and column) of potentially different types. Math operations align on both row and column labels. A df can be conceptualized by column or row. To view by column, use axis = 0 or axis = ‘index’. To view by row, use axis = 1 or axis = ‘columns’. This may seem counterintuitive when working with rows, but this is the way pandas implemented this feature.
+
+A pandas df is much easier to work with than a numpy matrix, but it is also less efficient. That is, it takes a lot more resources to process a pandas df. The numpy library is optimized for processing large amounts of data and numerical calculations.
+
+The 1st example creates a list of lists, places it into a pandas df, and displays some data:
+
+```python
+import pandas as pd
+
+if __name__ == "__main__":
+    data = [
+        [41, 72, 180], [27, 66, 140],
+        [18, 59, 101], [57, 72, 160],
+        [21, 59, 112], [29, 77, 250],
+        [55, 60, 120], [28, 72, 110],
+        [19, 59, 99], [32, 68, 125],
+        [31, 79, 322], [36, 69, 111]
+        ]
+    
+    headers = ['age', 'height', 'weight']
+    
+    df = pd.DataFrame(data, columns=headers)
+    n = 3
+    
+    print ('First', n, '"df" rows:\n', df.head(n))
+    print ('\nFirst "df" row:')
+    print (df[0:1])
+    print ('\nRows 2 through 4')
+    print (df[2:5])
+    print ('\nFirst', n, 'rows "age" column')
+    print (df[['age']].head(n))
+    print ('\nLast', n, 'rows "weight" and "age" columns')
+    print (df[['weight', 'age']].tail(n))
+    print ('\nRows 3 through 6 "weight" and "age" columns')
+    print (df.ix[3:6, ['weight', 'age']])
+```
+
+The code begins by importing pandas. The main block begins by creating a list of lists and adding it to a pandas df. It is a good idea to create your own headers as we do here. Method head() and tail() automatically display the 1st five records and last five records respectively unless a value is included. In this case, we display the 1st and last three records. Using head() and tail() are very useful, especially with a large df. Notice how easy it is to slice and dice the df. Also, notice how easy it is to display column data of your choice.
+
+The 2nd example creates a list of lists, places it into numpy matrix A, and puts A into a pandas df. This ability is very important because it shows how easy it is to create a df from a numpy matrix. So, you can be working with numpy matrices for precision and performance, and then convert to pandas for slicing, dicing, and other operations.
+
+```python
+import pandas as pd, numpy as np
+
+if __name__ == "__main__":
+    data = [
+        [41, 72, 180], [27, 66, 140],
+        [18, 59, 101], [57, 72, 160],
+        [21, 59, 112], [29, 77, 250],
+        [55, 60, 120], [28, 72, 110],
+        [19, 59, 99], [32, 68, 125],
+        [31, 79, 322], [36, 69, 111]
+        ]
+    A = np.matrix(data)
+    headers = ['age', 'height', 'weight']
+    df = pd.DataFrame(A, columns=headers)
+    print ('Entire "df":')
+    print (df, '\n')
+    print ('Sliced by "age" and "height":')
+    print (df[['age', 'height']])
+```
+
+The code begins by importing pandas and numpy. The main block begins by creating a list of lists, converting it to numpy matrix A, and then adding A to a pandas df.
+
+The 3rd example creates a list of lists, places it into a list of dictionary elements, and puts it into a pandas df. This ability is also very important because dictionaries are very efficient data structures when working with data science applications.
+
+```python
+import pandas as pd
+
+if __name__ == "__main__":
+    data = [
+        [41, 72, 180], [27, 66, 140],
+        [18, 59, 101], [57, 72, 160],
+        [21, 59, 112], [29, 77, 250],
+        [55, 60, 120], [28, 72, 110],
+        [19, 59, 99], [32, 68, 125],
+        [31, 79, 322], [36, 69, 111]
+        ]
+    d = {}
+    dls = []
+    key = ['age', 'height', 'weight']
+    
+    for row in data:
+        for i, num in enumerate(row):
+            d[key[i]] = num
+        dls.append(d)
+        d = {}
+    
+    df = pd.DataFrame(dls)
+    print ('dict elements from list:')
+    
+    for row in dls:
+        print (row)
+    
+    print ('\nheight from 1st dict element is:', end=' ')
+    print (dls[0]['height'])
+    print ('\n"df" converted from dict list:\n', df)
+    print ('\nheight 1st df element:\n', df[['height']].head(1))
+```
+
+The 4th code example creates two lists of lists—data and scores. The data list holds ages, heights, and weights for 12 athletes. The scores list holds three exam scores for 12 students. The data list is put directly into df1, and the scores list is put directly into df2. Averages are computed and displayed.
+
+```python
+import pandas as pd, numpy as np
+
+if __name__ == "__main__":
+    data = [
+        [41, 72, 180], [27, 66, 140],
+        [18, 59, 101], [57, 72, 160],
+        [21, 59, 112], [29, 77, 250],
+        [55, 60, 120], [28, 72, 110],
+        [19, 59, 99], [32, 68, 125],
+        [31, 79, 322], [36, 69, 111]
+        ]
+    scores = [
+        [99, 90, 88], [77, 66, 81], [78, 77, 83],
+        [75, 72, 79], [88, 77, 93], [88, 77, 94],
+        [100, 99, 93], [94, 74, 90], [98, 97, 99],
+        [73, 68, 77], [55, 50, 68], [36, 77, 90]
+        ]
+    n = 3
+    key1 = ['age', 'height', 'weight']
+    df1 = pd.DataFrame(data, columns=key1)
+    print ('df1 slice:\n', df1.head(n))
+    avg_cols = df1.apply(np.mean, axis=0)
+    print ('\naverage by columns:')
+    print (avg_cols)
+    avg_wt = df1[['weight']].apply(np.mean, axis="index")
+    print ('\naverage weight')
+    print (avg_wt)
+    key2 = ['exam1', 'exam2', 'exam3']
+    df2 = pd.DataFrame(scores, columns=key2)
+    print ('\ndf2 slice:\n', df2.head(n))    
+    avg_scores = df2.apply(np.mean, axis=1)
+    print ('\naverage scores for 1st', n, 'students (rows):')
+    print (avg_scores.head(n))
+    avg_slice = df2[['exam1','exam3']].apply(np.mean, axis="columns")
+    print ('\naverage "exam1" & "exam3" 1st', n, 'students (rows):')
+    print (avg_slice[0:n])
+```
+
+The code begins by importing pandas and numpy. The main block creates the data and scores lists and puts them in df1 and df2, respectively. With df1 (data), we average by column because our goal is to return the average age, height, and weight for all athletes. With df2 (scores), we average by row because our goal is to return the average overall exam score for each student. We could average by column for df2 if the goal is to calculate the average overall score for one of the exams. Try this if you wish.
+
 
